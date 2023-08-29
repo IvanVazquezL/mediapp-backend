@@ -2,6 +2,7 @@ package com.ivan.mediappbackend.controller;
 
 import com.ivan.mediappbackend.model.Patient;
 import com.ivan.mediappbackend.service.IPatientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,15 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 //  @RequestMapping to assign an endpoint, it has to be a plural sustantive
 @RequestMapping("/patients")
+@RequiredArgsConstructor
 public class PatientController {
     private final IPatientService service;
-
-    // Dependency Injection by Constructor
-    // Spring realizes that you are trying to inject a dependency by constructor
-    // and that it will need an instance compatible with IPatientService
-    public PatientController(IPatientService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public String satHelloREST() {
