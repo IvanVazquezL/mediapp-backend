@@ -3,9 +3,9 @@ package com.ivan.mediappbackend.controller;
 import com.ivan.mediappbackend.model.Patient;
 import com.ivan.mediappbackend.service.IPatientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // @RestController to convert the class into a REST service
 @RestController
@@ -16,14 +16,27 @@ public class PatientController {
     private final IPatientService service;
 
     @GetMapping
-    public String satHelloREST() {
-        Patient p = new Patient(1, "Iban");
-        return service.sayHelloLogic(p);
+    public List<Patient> getAll() {
+        return service.findAll();
     }
 
-    @GetMapping("/hello2")
-    public String satHelloREST2() {
-        Patient p = new Patient(2, "Iban");
-        return service.sayHelloLogic(p);
+    @GetMapping("/{id}")
+    public Patient getPatient(@PathVariable("id") Integer id) {
+        return service.findById(id);
+    }
+
+    @PostMapping
+    public Patient save(@RequestBody Patient patient) {
+        return service.save(patient);
+    }
+
+    @PutMapping("/{id}")
+    public Patient update(@PathVariable("id") Integer id, @RequestBody Patient patient) {
+        return service.update(patient, id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Integer id) {
+        service.delete(id);
     }
 }
