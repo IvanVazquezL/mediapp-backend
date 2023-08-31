@@ -3,8 +3,12 @@ package com.ivan.mediappbackend.controller;
 import com.ivan.mediappbackend.model.Patient;
 import com.ivan.mediappbackend.service.IPatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 // @RestController to convert the class into a REST service
@@ -16,27 +20,39 @@ public class PatientController {
     private final IPatientService service;
 
     @GetMapping
-    public List<Patient> getAll() {
-        return service.findAll();
+    // Response Entity we use it to send the HttpStatus
+    // Richardson Maturity Model Level 2
+    public ResponseEntity<List<Patient>> getAll() {
+        List<Patient> list = service.findAll();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Patient getPatient(@PathVariable("id") Integer id) {
-        return service.findById(id);
+    public ResponseEntity<Patient> getPatient(@PathVariable("id") Integer id) {
+        Patient patient = service.findById(id);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
     @PostMapping
-    public Patient save(@RequestBody Patient patient) {
-        return service.save(patient);
+    public ResponseEntity<?> save(@RequestBody Patient patient) {
+        Patient savedPatient = service.save(patient);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedPatient.getIdPatient())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping("/{id}")
-    public Patient update(@PathVariable("id") Integer id, @RequestBody Patient patient) {
-        return service.update(patient, id);
+    public ResponseEntity<Patient> update(@PathVariable("id") Integer id, @RequestBody Patient patient) {
+        Patient updatedPatient = service.update(patient, id);
+        return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         service.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
