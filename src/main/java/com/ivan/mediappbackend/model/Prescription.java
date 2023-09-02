@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -40,4 +41,13 @@ public class Prescription {
 
     @Column(nullable=false)
     private LocalDateTime prescriptionDate;
+
+    // Bidirectional relationship with PrescriptionDetail
+    // mappedby is how they are related, they are related by the prescription property in details
+    // cascade -> ALL, anything that happens to the father(Prescription) also will happen to the son(details)
+    // orphanRemoval, if i want to delete a detail i only delete it instead of all of them
+    // FetchType -> eager, brings the subelements with all its data
+    // ->lazy, brings the elements with some data
+    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<PrescriptionDetail> details;
 }
