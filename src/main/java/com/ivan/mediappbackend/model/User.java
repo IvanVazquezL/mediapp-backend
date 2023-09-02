@@ -1,13 +1,12 @@
 package com.ivan.mediappbackend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -25,5 +24,15 @@ public class User {
     private String password;
     @Column(nullable = false)
     private boolean enabled;
+    // Eager so the database fill the roles without us doing a second query
+    @ManyToMany(fetch = FetchType.EAGER)
+    // We create an intermediate table to establish the manu to many relationship between user and role
+    // id_role is inverse because that property is in Role not in User
+    @JoinTable(
+            name="user_role",
+            joinColumns = @JoinColumn(name="id_user", referencedColumnName = "idUser"),
+            inverseJoinColumns = @JoinColumn(name="id_role", referencedColumnName = "idRole")
+    )
+    private List<Role>roles;
 
 }
