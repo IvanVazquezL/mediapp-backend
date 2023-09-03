@@ -5,6 +5,7 @@ import com.ivan.mediappbackend.dto.PatientRecord;
 import com.ivan.mediappbackend.model.Patient;
 import com.ivan.mediappbackend.service.IPatientService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,20 +21,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PatientController {
     private final IPatientService service;
+    // Dependency injection
+    private final ModelMapper modelMapper;
 
     @GetMapping
     // Response Entity we use it to send the HttpStatus
     // Richardson Maturity Model Level 2
-    public ResponseEntity<List<PatientRecord>> getAll() {
-        List<PatientRecord> list = service.findAll().stream().map(element -> new PatientRecord(
-                element.getIdPatient(),
-                element.getFirstName(),
-                element.getLastName(),
-                element.getDni(),
-                element.getAddress(),
-                element.getPhone(),
-                element.getEmail()
-        )).toList();
+    public ResponseEntity<List<PatientDTO>> getAll() {
+        List<PatientDTO> list = service.findAll().stream().map(
+                patient -> modelMapper.map(patient, PatientDTO.class)
+        ).toList();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
