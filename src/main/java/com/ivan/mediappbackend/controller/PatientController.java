@@ -1,5 +1,6 @@
 package com.ivan.mediappbackend.controller;
 
+import com.ivan.mediappbackend.dto.PatientDTO;
 import com.ivan.mediappbackend.model.Patient;
 import com.ivan.mediappbackend.service.IPatientService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,16 @@ public class PatientController {
     @GetMapping
     // Response Entity we use it to send the HttpStatus
     // Richardson Maturity Model Level 2
-    public ResponseEntity<List<Patient>> getAll() {
-        List<Patient> list = service.findAll();
+    public ResponseEntity<List<PatientDTO>> getAll() {
+        List<PatientDTO> list = service.findAll().stream().map(element -> new PatientDTO(
+                element.getIdPatient(),
+                element.getFirstName(),
+                element.getLastName(),
+                element.getDni(),
+                element.getAddress(),
+                element.getPhone(),
+                element.getEmail()
+        )).toList();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
