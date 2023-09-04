@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 // entity class in a database has ten fields, you might create a DTO with only five of those fields to
 // reduce data transfer overhead.
 @Data
+
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
