@@ -7,6 +7,8 @@ import com.ivan.mediappbackend.service.IPatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 // @RestController to convert the class into a REST service
 @RestController
@@ -61,6 +66,23 @@ public class PatientController {
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    //HATEOAS stands for "Hypermedia as the Engine of Application State." It's a principle and
+    // architectural constraint in the design of RESTful web services. HATEOAS is one of the
+    // constraints that Roy Fielding introduced in his doctoral dissertation, where he defined the
+    // principles of Representational State Transfer (REST).
+    //The central idea behind HATEOAS is that a RESTful API should provide not only data (resources)
+    // but also information on how to interact with those resources. In other words, the API should
+    // guide the client on what actions it can take next by providing hyperlinks (hypermedia) along
+    // with the data.
+    @GetMapping("/hateoas/{id}")
+    public EntityModel<PatientDTO> findIdByHateoas(@PathVariable("id") Integer id) {
+        EntityModel<PatientDTO> resource = EntityModel.of(convertToDTO(service.findById(id)));
+        // It gets the link of the method getPatient
+        WebMvcLinkBuilder link1 = linkTo(methodOn(this.getClass()).getPatient(id));
+        resource.add(link1.withRel("patient-info"));
+        return resource;
     }
 
     private PatientDTO convertToDTO(Patient patient) {
