@@ -6,6 +6,7 @@ import com.ivan.mediappbackend.service.IMedicService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 public class MedicController {
     private final IMedicService service;
+    @Qualifier("medicMapper")
     private final ModelMapper modelMapper;
 
     @GetMapping
