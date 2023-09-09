@@ -1,0 +1,25 @@
+package com.ivan.mediappbackend.dto;
+
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
+@AllArgsConstructor
+public class ExamDTO {
+    @EqualsAndHashCode.Include
+    private Integer idExam;
+
+    @NotNull
+    @NotEmpty
+    private String nameExam;
+
+    @NotNull
+    @NotEmpty
+    private String description;
+}
