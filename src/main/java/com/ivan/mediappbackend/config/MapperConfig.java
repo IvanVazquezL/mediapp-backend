@@ -41,6 +41,8 @@ public class MapperConfig {
     @Bean("prescriptionMapper")
     public ModelMapper prescriptionMapper() {
         ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setAmbiguityIgnored(true);
+
         TypeMap<Prescription, PrescriptionDTO> typeMap1 = mapper.createTypeMap(Prescription.class, PrescriptionDTO.class);
 
         typeMap1.addMapping(e -> e.getMedic().getFirstName(), (dest, v) -> dest.getMedic().setName((String) v));
